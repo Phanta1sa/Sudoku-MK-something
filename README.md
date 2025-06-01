@@ -14,22 +14,22 @@ this engine should be able to
   - 2 game modes (rush, zen)
   - basic file handling using fileWrites and fileReaders.
 
- -Structure
-   src/
-     1-Board: handling the board’s attributes and some helper methods
-     2-Solver: the optimized solver
-     3-SolverBrute: the unoptimized solver
-     4-Gen: generation logic
-     5-FileManager: basic file I/O
-     6-UserInterface: most CLI I/O
-     7-GameLoop: the game logic and flow 
-     8-GameMode: the 2 game modes
-     9-TimeControl:time-relate helper methods 
-     10 -Main: the starting point
+## Structure
 
+- `Board`: handles the board’s attributes and some helper methods  
+- `Solver`: the optimized solver  
+- `SolverBrute`: the unoptimized solver  
+- `Gen`: generation logic  
+- `FileManager`: basic file I/O  
+- `UserInterface`: most CLI I/O  
+- `GameLoop`: the game logic and flow  
+- `GameMode`: the two game modes  
+- `TimeControl`: time-related helper methods  
+- `Main`: the starting point  
  -License:
    This project is licensed under the MIT License.
 
   -Author : **ammar** (phanta1sa)
+  
      
  
