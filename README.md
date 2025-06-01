@@ -16,16 +16,16 @@ this engine should be able to
 
  -Structure
    src/
-     Board: handling the board’s attributes and some helper methods
-     Solver: the optimized solver
-     SolverBrute: the unoptimized solver
-     Gen: generation logic
-     FileManager: basic file I/O
-     UserInterface: most CLI I/O
-     GameLoop: the game logic and flow 
-     GameMode: the 2 game modes
-     TimeControl:time-relate helper methods 
-     Main: the starting point
+     -Board: handling the board’s attributes and some helper methods
+     -Solver: the optimized solver
+     -SolverBrute: the unoptimized solver
+     -Gen: generation logic
+     -FileManager: basic file I/O
+     -UserInterface: most CLI I/O
+     -GameLoop: the game logic and flow 
+     -GameMode: the 2 game modes
+     -TimeControl:time-relate helper methods 
+     -Main: the starting point
 
  -License:
    This project is licensed under the MIT License.
