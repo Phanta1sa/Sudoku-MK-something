@@ -1,35 +1,46 @@
 # Sudoku-MK-something
-An interactive CLI Sudoku engine with file reading/writing an optizmized solver(underdevelopment still), and a simple brute force one.
 
-this engine should be able to 
+An interactive CLI Sudoku engine with file reading/writing, an optimized solver (under development), and a simple brute-force one.
+
+This engine can:
 1. Solve
 2. Play
-3. Gen
+3. Generate
 4. Validate
 
 ## Features
-  - 2 solvers, one optimized with bitmasks and some other simple things, the other is a straightforward barebones one
-  - CLI menus with basic error handling
-  - Puzzle generation for sizes 4, 9, and 16 with basic uniqueness checking.
-  - 2 game modes (rush, zen)
-  - basic file handling using fileWrites and fileReaders.
+- Two solvers: one optimized with bitmasks and basic heuristics, and one straightforward barebones solver
+- CLI menus with basic error handling
+- Puzzle generation for sizes 4×4, 9×9, and 16×16 with basic uniqueness checking
+- Two game modes (Rush, Zen)
+- Basic file handling using `FileWriter` and `FileReader`
+- Procedural puzzle generation with optional seeding
 
 ## Structure
 
-- `Board`: handles the board’s attributes and some helper methods  
-- `Solver`: the optimized solver  
-- `SolverBrute`: the unoptimized solver  
-- `Gen`: generation logic  
-- `FileManager`: basic file I/O  
-- `UserInterface`: most CLI I/O  
-- `GameLoop`: the game logic and flow  
-- `GameMode`: the two game modes  
-- `TimeControl`: time-related helper methods  
-- `Main`: the starting point  
- -License:
-   This project is licensed under the MIT License.
+- `Board`: Handles the board’s attributes and some helper methods  
+- `Solver`: The optimized solver  
+- `SolverBrute`: The unoptimized solver  
+- `Gen`: Generation logic  
+- `FileManager`: Basic file I/O  
+- `UserInterface`: Most CLI I/O  
+- `GameLoop`: The game logic and flow  
+- `GameMode`: The two game modes  
+- `TimeControl`: Time-related helper methods  
+- `Main`: The starting point
 
-  -Author : **ammar** (phanta1sa)
-  
-     
- 
+## TODO / In Progress
+- [ ] Improve puzzle uniqueness checks
+- [ ] Improvement of the cell selection method
+- [ ] A better testing class
+
+
+## Contributing
+
+Contributions, ideas, or bug reports are welcome! Please open an issue or pull request.
+
+## License
+This project is licensed under the MIT License.
+
+## Author
+**ammar** (phanta1sa)
