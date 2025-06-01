@@ -7,7 +7,7 @@ this engine should be able to
 3. Gen
 4. Validate
 
--Features
+## Features
   - 2 solvers, one optimized with bitmasks and some other simple things, the other is a straightforward barebones one
   - CLI menus with basic error handling
   - Puzzle generation for sizes 4, 9, and 16 with basic uniqueness checking.
