@@ -8,7 +8,7 @@ this engine should be able to
 4. Validate
 
 -Features
-  - 2 solvers, one optimized with bitmasks and some other simple things, the other a straightforward barebones one
+  - 2 solvers, one optimized with bitmasks and some other simple things, the other is a straightforward barebones one
   - CLI menus with basic error handling
   - Puzzle generation for sizes 4, 9, and 16 with basic uniqueness checking.
   - 2 game modes (rush, zen)
