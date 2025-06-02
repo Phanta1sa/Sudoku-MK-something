@@ -8,12 +8,20 @@ public class Board {
     static int RULE = (SIZEOFBOARD*(SIZEOFBOARD+1))/2;
 
     public static void printBoard(int[][] board) {
-        for (int i = 0; i < SIZEOFBOARD; i++) {
-            for (int j = 0; j < SIZEOFBOARD; j++) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < Board.SIZEOFBOARD; j++) {
+                if (j % Board.SIZEOFSQUARE == 0 && j != 0) System.out.print("| ");
                 System.out.print(board[i][j] + " ");
-
             }
-            System.out.println();
+            System.out.print("\n");
+            if ((i + 1) % Board.SIZEOFSQUARE == 0) {
+                for (int j = 0; j < Board.SIZEOFBOARD - 2; j++) {
+                    System.out.print("---");
+                }
+                System.out.print("-");
+                System.out.print("\n");
+            }
+
         }
     }
     public static int[][] readingBoard(Scanner input) {
