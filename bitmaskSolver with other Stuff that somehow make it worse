@@ -1,0 +1,203 @@
+import java.util.Arrays;
+import java.util.Stack;
+
+public class Solver {
+    Stack<int[]> swapHistory = new Stack<>();
+    int[] freq = new int[Board.SIZEOFBOARD]; // how many times does each element appear in the board
+    int[] sumCol = new int[Board.SIZEOFBOARD];// the for the col
+    int[] sumRow = new int[Board.SIZEOFBOARD];
+    int[] occurInRow = new int[Board.SIZEOFBOARD];// the freq in rows
+    int[] occurInCol = new int[Board.SIZEOFBOARD];
+    int[] indexOfOrder = new int[Board.SIZEOFBOARD]; // as the name suggest it's the index of the freq
+    int[] order = fillingOrder(); // order of elements to try
+    int[][] solved = new int[Board.SIZEOFBOARD][Board.SIZEOFBOARD];
+    int[] bitMaskCol = new int[Board.SIZEOFBOARD];
+    int[] bitMaskRow = new int[Board.SIZEOFBOARD];
+    int[] bitMaskSq = new int[Board.SIZEOFBOARD];
+    public boolean isPlaceValid(int row, int col, int number) {
+        return (bitMaskRow[row] & (1<<(number-1))) == 0 && (bitMaskCol[col] & (1<<(number-1))) ==0 && (bitMaskSq[squareIndex(row,col)] & (1<<(number-1))) == 0; // checks if the bits are used
+    }
+    public boolean solve(int[][] board){
+        int flagForRow = -1;
+        int flagForCol = -1;
+        for (int row = 0; row < Board.SIZEOFBOARD; row++) {
+            for (int col = 0; col < Board.SIZEOFBOARD; col++) {
+                if(board[row][col] == 0){
+                    if(occurInRow[row] == Board.SIZEOFBOARD-1){ // check if row has 8(9x9) filled and determent the last cell
+                        int shouldBeRow = Board.RULE-sumRow[row];
+                        if (isPlaceValid(row, col, shouldBeRow)){
+                            flagForRow = shouldBeRow;
+                        }
+                    }if(occurInCol[col] == Board.SIZEOFBOARD-1){
+                        int shouldBeCol = Board.RULE-sumCol[col];
+                        if (isPlaceValid(row, col, shouldBeCol)){
+                            flagForCol = shouldBeCol;
+                        }
+                    }
+                    for(int number :order){// go over the numbers by least used
+                        if (freq[number-1] == Board.SIZEOFBOARD) continue;
+                        if(isPlaceValid(row, col, number)){
+                            if(flagForRow != -1 && !(flagForRow == number)) continue;
+                            if(flagForCol != -1 && !(flagForCol == number)) continue;
+                            if(checkForFullSquare(row,col,board)){
+                                if(checkForMaxedSquare(row,col,board,number)) continue;
+                            }
+                            board[row][col] = number; // change the zero to a number so you can skip it in the next try
+                            addStep(row,col,number);
+                            if(solve(board)){
+                                return true;
+                            }else{
+                                removeStep(row,col,number);// redo the changes you did and try again
+                                board[row][col] = 0;
+                            }
+                        }
+                    } return false;
+                }
+            }
+        }
+        return true;
+    }
+    private  boolean checkForFullSquare(int row,int col,int[][] board){
+        int Fi = row/(Board.SQURESIZE)*(Board.SQURESIZE);
+        int Fj = col/(Board.SQURESIZE)*(Board.SQURESIZE);
+        int howManyEmpty = 0;
+        for (int i = 0 ; i <(Board.SQURESIZE) ; i++) {
+            for (int j = 0; j < (Board.SQURESIZE); j++) {
+                if(board[i+Fi][j+Fj] !=0) howManyEmpty++;
+                if(howManyEmpty>1) return false;
+            }
+        }
+
+        return true;
+    }
+    private  boolean checkForMaxedSquare(int row,int col,int[][] board, int number){
+        int tempFi = row/(Board.SQURESIZE)*(Board.SQURESIZE);
+        int tempFj = col/(Board.SQURESIZE)*(Board.SQURESIZE);
+        int sum =0;
+        for (int i = 0 ; i <(Board.SQURESIZE) ; i++) {
+            for (int j = 0; j < (Board.SQURESIZE); j++) {
+                sum += board[i+tempFi][j+tempFj];
+            }
+        }
+        return sum+number == Board.RULE;
+    }
+    private int squareIndex(int row, int col) {
+        return (row / Board.SQURESIZE) * Board.SQURESIZE + (col / Board.SQURESIZE);
+    }
+    private  void addStep(int row,int col,int number){
+        freq[number -1]++;
+        occurInRow[row]++;
+        occurInCol[col]++;
+        sumCol[col]+=number;
+        sumRow[row]+=number;
+        bestOrder(indexOfOrder[number-1]);
+        bitMaskRow[row] |= (1 << (number - 1)); // flip the bit (number-1) from the right to 1
+        bitMaskCol[col] |= (1 << (number - 1));
+        bitMaskSq[squareIndex(row,col)] |= (1 << (number - 1));
+    }
+    private  void removeStep(int row,int col,int number){
+        sumCol[col] -= number;
+        sumRow[row] -= number;
+        freq[number - 1]--;
+        occurInRow[row]--;
+        occurInCol[col]--;
+        bitMaskRow[row] &= ~(1 << (number - 1)); // get the ~ bit(the compliment) so you can switch the 1 into 0 using and assignment 1 << x means put one after x amount of bits
+        bitMaskCol[col] &= ~(1 << (number - 1));
+        bitMaskSq[squareIndex(row,col)] &= ~(1 << (number - 1));
+        bestOrder(indexOfOrder[number-1]);
+        if(!swapHistory.empty()){//undo changes made by the best order method
+            int[] swapped = swapHistory.pop();
+            int first = swapped[0];
+            int second = swapped[1];
+            int temp = order[first];
+            order[first] = order[second];
+            order[second] = temp;
+            indexOfOrder[order[first]-1] = first;
+            indexOfOrder[order[second]-1] = second;
+        }
+    }
+    private  void bestOrder(int change){
+        if (change + 1 >= Board.SIZEOFBOARD) return;
+        for (int i = 1; change + i < Board.SIZEOFBOARD; i++) { // tbh I couldn't keep up with the 3 arrays, so I used a bit of help to implement this
+            int left = order[change];
+            int right = order[change + i];
+
+            if (freq[left - 1] > freq[right - 1]) { // look for the next element with higher freq
+
+                order[change] = right;
+                order[change + i] = left;
+
+                // Update indexOfOrder[]
+                indexOfOrder[right - 1] = change;
+                indexOfOrder[left - 1] = change + i;
+
+                swapHistory.push(new int[]{change, change + i});
+
+                break;
+
+            }
+        }
+            /* my first idea
+
+            if(freq[order[change]-1]>freq[order[change+1]-1]){
+                int temp = order[change];
+                order[change] = order[change + 1];
+                order[change + 1] = temp;
+
+                indexOfOrder[order[change] - 1] = change;//I honestly don't understand how I got to this point but if freq changes update order and indexOfOrder is as the name says so you should switch that 2
+                indexOfOrder[order[change + 1] - 1] = change + 1;
+            }*/
+
+    }
+    private  int[] fillingOrder(){
+        int[] temp = new int[Board.SIZEOFBOARD];
+        for (int i = 0; i < Board.SIZEOFBOARD; i++) {
+            temp[i] = i+1;
+            indexOfOrder[i] = i;
+        }
+        return temp;
+    }
+    public void metaDataReader(int[][] board){
+        for (int row = 0; row < Board.SIZEOFBOARD; row++) {
+            for (int col = 0; col < Board.SIZEOFBOARD; col++){
+                if(board[row][col] != 0){
+                    freq[board[row][col]-1]++;
+                    occurInRow[row]++;
+                    occurInCol[col]++;
+                    sumRow[row] += board[row][col];
+                    sumCol[col] += board[row][col];
+                    bitMaskRow[row] |= (1 << board[row][col]-1);
+                    bitMaskCol[col] |= (1 <<  board[row][col]-1);
+                    bitMaskSq[squareIndex(row,col)] |= (1<< board[row][col]-1);
+                }
+            }
+        }
+        Integer[] temp = new Integer[Board.SIZEOFBOARD];
+        for (int i = 0; i < Board.SIZEOFBOARD; i++) {
+            temp[i] = i+1;
+        }
+        Arrays.sort(temp, (a,b) -> Integer.compare(freq[a-1],freq[b-1])); //sort the wrapper temp array using values from freq
+        for (int i = 0; i < Board.SIZEOFBOARD; i++) {
+            order[i] = temp[i];
+            indexOfOrder[order[i]-1] = i;
+        }
+
+    }
+    public boolean solveBoard(int[][] board){
+        freq = new int[Board.SIZEOFBOARD];
+        sumCol = new int[Board.SIZEOFBOARD];
+        sumRow = new int[Board.SIZEOFBOARD];
+        occurInRow = new int[Board.SIZEOFBOARD];
+        occurInCol = new int[Board.SIZEOFBOARD];
+        indexOfOrder = new int[Board.SIZEOFBOARD];
+        order = fillingOrder();
+        swapHistory.clear();
+        solved = Board.copy(board);
+        metaDataReader(board);
+        return solve(board);
+    }
+
+    // todo:early exit if sum can't = 45
+    //todo:naked singles check
+    //todo:comment the code
+}
