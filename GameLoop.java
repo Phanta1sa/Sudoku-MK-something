@@ -53,11 +53,9 @@ public class GameLoop {
             for (int col = 0; col < board.length; col++){
                 for (int number = 1; number <=Board.SIZEOFBOARD; number++){
                     if (board[row][col] != 0) continue;
-                    if(SolverBrute.isPlaceValid(board, row, col, number)) {
-                        System.out.println("Here is your hint: " + number + " at row " + (row+1) + ", column " + (col+1)); // java concatenation is a nightmare
-                        Board.printBoard(board);
-                        return;
-                    }
+                    System.out.println("Here is your hint: " + Main.solve.solved[row][col] + " at row " + (row+1) + ", column " + (col+1)); // java concatenation is a nightmare
+                    Board.printBoard(board);
+                    return;
                 }
             }
         }
